@@ -1,0 +1,100 @@
+@import 'tailwindcss';
+
+/* Інтерфейс для швидкого щоденного введення: великі поля, помітні кнопки. */
+@layer components {
+  .field-label {
+    @apply block text-sm font-medium text-slate-600 mb-1;
+  }
+
+  .field-input {
+    @apply w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-base text-slate-900
+           shadow-sm outline-none transition
+           focus:border-green-500 focus:ring-2 focus:ring-green-200
+           disabled:bg-slate-100 disabled:text-slate-500;
+  }
+
+  /* Tailwind v4 не дозволяє @apply для власних класів, тому базові стилі
+     кнопки повторюються в кожному варіанті. */
+  .btn,
+  .btn-primary,
+  .btn-secondary,
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-base font-medium
+           transition select-none disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-primary {
+    @apply bg-green-600 text-white shadow-sm hover:bg-green-700 active:bg-green-800;
+  }
+
+  .btn-secondary {
+    @apply border border-slate-300 bg-white text-slate-700 hover:bg-slate-50;
+  }
+
+  .btn-danger {
+    @apply border border-red-200 bg-white text-red-600 hover:bg-red-50;
+  }
+
+  .card {
+    @apply rounded-xl border border-slate-200 bg-white shadow-sm;
+  }
+
+  .table-base {
+    @apply w-full border-collapse text-sm;
+  }
+
+  .table-base th {
+    @apply bg-slate-50 px-3 py-2 text-left font-semibold text-slate-600 border-b border-slate-200 whitespace-nowrap;
+  }
+
+  .table-base td {
+    @apply px-3 py-2 border-b border-slate-100 text-slate-800;
+  }
+
+  .table-base tbody tr:hover td {
+    @apply bg-slate-50/70;
+  }
+}
+
+/* Друк відомості/бланків: без навігації та кнопок */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    background: white;
+    /* трохи менший базовий шрифт на друку - разом з table-layout: fixed
+       нижче прибирає обрізання полів бланка по краю сторінки */
+    font-size: 0.85em;
+  }
+
+  @page {
+    size: A4 landscape;
+    margin: 10mm;
+  }
+
+  /* Таблиці бланків мають вміщатись по ширині сторінки, а не вилазити за
+     межі: table-layout: fixed жорстко обмежує загальну ширину таблиці
+     контейнером (100%), а зняте nowrap із заголовків дозволяє довгим назвам
+     колонок переноситись замість розтягування таблиці по вмісту. */
+  .table-base {
+    table-layout: fixed;
+    width: 100% !important;
+  }
+
+  .table-base th,
+  .table-base td {
+    padding: 4px 6px;
+  }
+
+  .table-base th {
+    white-space: normal;
+    word-break: break-word;
+    font-size: 0.8em;
+  }
+
+  .table-base td {
+    word-break: break-word;
+  }
+}
