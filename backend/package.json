@@ -1,0 +1,32 @@
+{
+  "name": "agro-zp-backend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Backend (Express + SQLite) для обліку шляхових листів та розрахунку ЗП",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "db:migrate": "node src/db/migrate.js",
+    "db:reset": "node src/db/migrate.js --reset",
+    "seed:demo": "node scripts/seed-demo-data.js",
+    "inspect:xlsx": "node scripts/inspect-xlsx.js",
+    "test": "node --test \"tests/**/*.test.js\"",
+    "test:coverage": "node --test --experimental-test-coverage \"tests/**/*.test.js\""
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.2.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.1",
+    "exceljs": "^4.4.0",
+    "express": "^5.1.0",
+    "jszip": "^3.10.1",
+    "multer": "^2.2.0",
+    "xlsx": "^0.18.5",
+    "zod": "^4.0.17"
+  },
+  "allowScripts": {
+    "better-sqlite3@12.11.1": true
+  }
+}

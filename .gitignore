@@ -1,0 +1,15 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+
+# Claude Code local (per-developer, not shared)
+.claude/settings.local.json
+.claude/*.lock
+
+# top-level node_modules, just in case
+node_modules/
+
+# портативний Node для запускачки (Відкрити облік.bat) - великий бінарник,
+# генерується копіюванням системного node.exe, не тримаємо в git
+runtime/
