@@ -1,6 +1,6 @@
 /**
  * Допоміжний скрипт: показує структуру Excel-файлів (аркуші та перші рядки).
- * Використання: node scripts/inspect-xlsx.js ../tariffs/1.xlsx [--rows 20]
+ * Використання: node scripts/inspect-xlsx.js шлях/до/файлу.xlsx [--rows 20]
  */
 import path from 'node:path';
 import XLSX from 'xlsx';
