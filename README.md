@@ -1,82 +1,124 @@
-# Агро-ЗП — облік шляхових листів і розрахунок зарплати
+# Agro-ZP — waybills and payroll for a farm enterprise
 
-Веб-додаток для обліковця агропідприємства: замінює паперові шляхові листи
-та ручний підрахунок зарплати механізаторів і водіїв. Обліковець вносить
-виконані роботи, а програма сама підбирає тариф, рахує суму, будує табель,
-відомість ЗП і друкує офіційні бланки (форма №68, типова форма №2).
+A web app for the record-keeper of an agricultural enterprise. It replaces paper
+waybills and hand-calculated wages for machine operators and drivers: the
+record-keeper enters completed work, and the app picks the right tariff,
+calculates the amount, builds the timesheet and payroll sheet, and prints the
+official forms (form No. 68, standard form No. 2).
 
-**Демо:** https://agro-zp.vercel.app
-(дані вигадані й скидаються при перезапуску сервера; перше відкриття може
-тривати до хвилини — безкоштовний бекенд «прокидається»)
+The UI and domain are in Ukrainian.
 
-## Можливості
+**Demo:** https://agro-zp.vercel.app
+(the data is fictional and resets whenever the server restarts; the first load
+can take up to a minute while the free-tier backend wakes up)
 
-| Розділ | Що робить |
+> **Note:** all data in this repository and in the demo — employee names,
+> machinery, fields, work records, telematics reports and sample forms — is
+> fictional and included solely to demonstrate how the app works. Any
+> resemblance to real people or enterprises is coincidental.
+>
+> **Примітка:** усі дані в репозиторії та в демо — ПІБ працівників, техніка,
+> поля, виконані роботи, звіти телематики й приклади форм — вигадані та внесені
+> виключно для демонстрації роботи застосунку. Будь-які збіги з реальними
+> людьми чи підприємствами випадкові.
+
+## Features
+
+| Section | What it does |
 |---|---|
-| Реєстрація роботи | форма шляхового листа з розрахунком суми «на льоту» |
-| Журнал робіт | пошук і фільтрація всіх шляхових, експорт у Excel |
-| Табель | сітка «працівники × дні», підсвічування понаднормових і незаповнених годин |
-| Відомість ЗП | зведений розрахунок за період, деталізація по працівнику, закриття місяця |
-| Друк бланків | заповнення офіційних Excel-бланків шляхових листів |
-| Контроль гектарів | оброблена площа проти площі поля в межах кожного виду робіт |
-| Дані з техніки | імпорт мотогодин і пального з телематики OVERSEER |
-| Плани робіт, Ремонт | план на день і облік годин ремонту техніки |
-| Довідники | працівники, техніка, поля, види робіт, тарифи, міжміські рейси |
+| Work entry | waybill form with the amount calculated on the fly |
+| Work log | search and filter all waybills, export to Excel |
+| Timesheet | employees × days grid, highlights overtime and missing hours |
+| Payroll | summary for a period, per-employee breakdown, month closing |
+| Form printing | fills in the official Excel waybill templates |
+| Hectare control | processed area vs. field area, per type of work |
+| Machinery data | imports engine hours and fuel from OVERSEER telematics |
+| Work plans, Repairs | daily work plan and repair hours tracking |
+| Reference data | employees, machinery, fields, work types, tariffs, intercity trips |
 
-Особливості розрахунку:
+Payroll calculation details:
 
-- оплата за тарифом (га, т, т·км, ходки, тюки…), погодинно від окладу чи мінімалки,
-  складені тарифи, доплати;
-- розцінка й сума зберігаються **знімком** у записі — зміна тарифу не
-  переписує вже нараховану зарплату;
-- імпорт з OVERSEER і Hecterra (GPS-агрооперації), сповіщення про немаплені
-  записи; вивантаження для бухгалтерії BAS.
+- pay by tariff (ha, t, t·km, trips, bales…), hourly from salary or minimum wage,
+  composite tariffs, bonuses;
+- the rate and amount are stored as a **snapshot** in each record — changing a
+  tariff never rewrites wages already accrued;
+- imports from OVERSEER and Hecterra (GPS field operations), alerts for
+  unmapped records; export for BAS accounting software.
 
-## Стек
+## Tech stack
 
-- **Frontend:** React 19, Vite, Tailwind CSS 4, React Router; тести — Vitest + Testing Library
-- **Backend:** Node.js, Express 5, SQLite (`better-sqlite3`), валідація `zod`,
-  Excel — `exceljs` / `xlsx`; тести — вбудований `node --test` (270+ unit та інтеграційних)
-- **Деплой:** фронтенд на Vercel, бекенд на Render
+- **Frontend:** React 19, Vite, Tailwind CSS 4, React Router; tests — Vitest + Testing Library
+- **Backend:** Node.js, Express 5, SQLite (`better-sqlite3`), `zod` validation,
+  Excel via `exceljs` / `xlsx`; tests — built-in `node --test` (270+ unit and integration)
+- **Deployment:** frontend on Vercel, backend on Render
 
-## Структура
+## Project structure
 
 ```
-backend/     API (Express + SQLite), бізнес-логіка, тести — див. backend/README.md
-frontend/    SPA на React + Vite
-шаблони/     офіційні Excel-бланки, з яких друкуються шляхові листи
-render.yaml  опис сервісу бекенду для Render
+backend/              API (Express + SQLite), business logic, tests — see backend/README.md
+frontend/             React + Vite SPA
+шаблони/              official Excel templates the waybills are printed from
+render.yaml           Render service definition for the backend
+Відкрити облік.bat    start the offline Windows version ("Open records")
+Зупинити облік.bat    stop the offline Windows version ("Stop records")
 ```
 
-## Локальний запуск
+## Running locally
 
-Потрібен Node.js 22+.
+Requires Node.js 22+.
 
 ```bash
-# бекенд — http://localhost:4000/api
+# backend — http://localhost:4000/api
 cd backend
 npm install
 npm run db:migrate
-npm run seed:demo      # вигадані демо-дані
+npm run seed:demo      # fictional demo data
 npm run dev
 
-# фронтенд — http://localhost:5173 (запити /api проксуються на бекенд)
+# frontend — http://localhost:5173 (/api requests are proxied to the backend)
 cd frontend
 npm install
 npm run dev
 ```
 
-Тести: `npm test` у `backend/` та `frontend/`.
+Tests: `npm test` in both `backend/` and `frontend/`.
 
-## Деплой
+## Offline Windows version
 
-- **Бекенд — Render.** `render.yaml` описує Web Service; при старті
-  `npm run start:prod` оновлює схему БД, заповнює порожню БД демо-даними й
-  запускає сервер. Диск безкоштовного плану ефемерний, тому демо-база
-  відновлюється при кожному перезапуску.
-- **Фронтенд — Vercel** (Root Directory: `frontend`). `frontend/vercel.json`
-  проксує `/api/*` на бекенд і віддає `index.html` для маршрутів SPA, тож
-  фронтенд працює з відносним `/api` без CORS.
+The app was built to run on a single office PC with no internet connection and
+no developer tools. For that, the repository root contains two launchers for
+the end user:
 
-Детальна технічна довідка (модель даних, формули розрахунку, повний API) —
-[`backend/README.md`](backend/README.md).
+- **`Відкрити облік.bat`** (“Open records”) — updates the database schema
+  (migrations are safe to re-run), starts the backend hidden in the background
+  using a portable `node.exe`, and opens the app in a separate Chrome/Edge
+  window (`--app` mode). The backend also serves the built frontend, so
+  everything runs from http://localhost:4000. Closing the app window stops the
+  server automatically.
+- **`Зупинити облік.bat`** (“Stop records”) — a fallback that force-stops the
+  server if something went wrong.
+
+The launchers expect a `runtime/` folder next to them (portable `node.exe`,
+launcher scripts, window icon, a separate Chrome profile). It is **not
+committed** to the repository (see `.gitignore`), so after cloning, the `.bat`
+files will only show a “runtime\node.exe not found” message. To assemble a
+working copy:
+
+1. Install dependencies in `backend/` and build the frontend
+   (`cd frontend && npm run build`).
+2. Create `runtime/` and copy `node.exe` from your Node.js installation into it,
+   along with the launcher scripts.
+3. Copy the whole project folder to the target PC and run `Відкрити облік.bat`.
+
+## Deployment
+
+- **Backend — Render.** `render.yaml` defines a Web Service; on start,
+  `npm run start:prod` updates the DB schema, seeds an empty DB with demo data,
+  and starts the server. The free plan's disk is ephemeral, so the demo
+  database is restored on every restart.
+- **Frontend — Vercel** (Root Directory: `frontend`). `frontend/vercel.json`
+  proxies `/api/*` to the backend and serves `index.html` for SPA routes, so the
+  frontend works with a relative `/api` and no CORS.
+
+Detailed technical reference (data model, calculation formulas, full API) —
+[`backend/README.md`](backend/README.md) (in Ukrainian).
