@@ -1,7 +1,8 @@
 # Агро-Зарплата & Облік Шляхових Листів — Backend
 
-Node.js (Express) + SQLite. Self-hosted, без зовнішніх сервісів.
-SQL написаний просто, щоб перенести БД на PostgreSQL для сервера.
+Node.js (Express) + SQLite. Працює локально (запускачка для обліковця) або
+на хостингу (демо на Render — див. «Деплой»). SQL написаний просто, щоб
+перенести БД на PostgreSQL для сервера.
 
 ## Запуск для обліковця
 
@@ -28,6 +29,18 @@ npm run dev                 # http://localhost:4000/api
 |---|---|
 | `npm run db:reset` | видалити БД і створити структуру заново |
 | `npm run seed:demo` | наповнити чисту БД вигаданими демо-даними |
+| `npm run start:prod` | міграція + демо-дані в порожню БД + запуск (для хостингу) |
+
+## Деплой
+
+Render Web Service за `../render.yaml`: `npm ci`, старт — `npm run start:prod`
+(`migrate.js` → `seed-demo-data.js --if-empty` → `server.js`), health check —
+`/api/health`. `PORT` задає Render. Диск безкоштовного плану ефемерний: БД,
+`uploads/` і `backups/` зникають при перезапуску, і база знову наповнюється
+демо-даними. Для постійних даних потрібен диск/том (платний план Render,
+Railway, Fly.io) з `DB_PATH` на нього, або перехід на PostgreSQL.
+Фронтенд розгорнутий окремо на Vercel і проксує `/api/*` сюди
+(`frontend/vercel.json`).
 
 ## Тести
 
@@ -314,7 +327,6 @@ backend/
 
 ## Наступні кроки
 
-- Frontend: React + Tailwind (форма шляхового листа, табель, відомість, довідники).
 - PDF-експорт: зараз є Excel; PDF найпростіше робити з фронтенду через друк
   сторінки відомості (або додати серверний рендер за потреби).
 - Перенесення на PostgreSQL: замінити `INTEGER PRIMARY KEY AUTOINCREMENT`,
