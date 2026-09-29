@@ -1,0 +1,18 @@
+# Render Blueprint: бекенд (Express + SQLite) як Web Service.
+# Файлова система безкоштовного інстансу ефемерна - БД створюється заново
+# при кожному перезапуску/деплої й наповнюється демо-даними (start:prod).
+services:
+  - type: web
+    name: agro-zp-api
+    runtime: node
+    plan: free
+    region: frankfurt
+    buildCommand: cd backend && npm ci
+    startCommand: cd backend && npm run start:prod
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: NORMAL_SHIFT_HOURS
+        value: "8"

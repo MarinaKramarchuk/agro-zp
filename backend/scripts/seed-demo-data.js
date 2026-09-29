@@ -16,6 +16,7 @@ import { unitMetrics } from '../src/services/payrollCalc.js';
 import { createWorklog } from '../src/services/worklogService.js';
 
 const FORCE = process.argv.includes('--force');
+const IF_EMPTY = process.argv.includes('--if-empty');
 
 function rnd(min, max) {
   return min + Math.random() * (max - min);
@@ -40,6 +41,12 @@ function guard() {
     fields: db.prepare('SELECT COUNT(*) c FROM fields').get().c,
   };
   const nonEmpty = Object.entries(counts).filter(([, c]) => c > 0);
+  // --if-empty: для автоматичного старту на хостингу - наповнюємо лише чисту
+  // БД, а наявні дані мовчки лишаємо (без помилки, щоб не зірвати запуск).
+  if (nonEmpty.length > 0 && IF_EMPTY) {
+    console.log('У БД вже є дані - демо-наповнення пропущено.');
+    process.exit(0);
+  }
   if (nonEmpty.length > 0 && !FORCE) {
     console.error(
       `У БД вже є дані (${nonEmpty.map(([k, c]) => `${k}: ${c}`).join(', ')}).\n` +
